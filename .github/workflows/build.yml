@@ -36,26 +36,24 @@ jobs:
           cp config.xml cordova-app/config.xml
 
       - name: Add Android platform
-        run: |
-          cd cordova-app
-          cordova platform add android@12
+        working-directory: cordova-app
+        run: cordova platform add android@12
 
       - name: Install plugins
+        working-directory: cordova-app
         run: |
-          cd cordova-app
           cordova plugin add cordova-plugin-file
           cordova plugin add cordova-plugin-media
 
       - name: Fix Gradle version
+        working-directory: cordova-app/platforms/android
         run: |
-          cd cordova-app/platforms/android
           sed -i 's|distributionUrl=.*|distributionUrl=https\\://services.gradle.org/distributions/gradle-7.6-all.zip|' gradle/wrapper/gradle-wrapper.properties
           cat gradle/wrapper/gradle-wrapper.properties
 
       - name: Build APK (debug)
-        run: |
-          cd cordova-app
-          cordova build android --debug
+        working-directory: cordova-app
+        run: cordova build android --debug
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
