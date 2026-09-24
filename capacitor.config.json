@@ -1,0 +1,12 @@
+{
+  "appId": "com.musicplayer.app",
+  "appName": "Music Player",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": true
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}
