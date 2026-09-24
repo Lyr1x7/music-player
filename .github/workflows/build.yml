@@ -17,16 +17,16 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '18'
 
-      - name: Setup Java JDK 17
+      - name: Setup Java JDK 11
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '11'
 
       - name: Install Cordova
-        run: npm install -g cordova@12
+        run: npm install -g cordova@11
 
       - name: Create Cordova project
         run: |
@@ -37,19 +37,13 @@ jobs:
 
       - name: Add Android platform
         working-directory: cordova-app
-        run: cordova platform add android@12
+        run: cordova platform add android@10
 
       - name: Install plugins
         working-directory: cordova-app
         run: |
           cordova plugin add cordova-plugin-file
           cordova plugin add cordova-plugin-media
-
-      - name: Fix Gradle version
-        working-directory: cordova-app/platforms/android
-        run: |
-          sed -i 's|distributionUrl=.*|distributionUrl=https\\://services.gradle.org/distributions/gradle-7.6-all.zip|' gradle/wrapper/gradle-wrapper.properties
-          cat gradle/wrapper/gradle-wrapper.properties
 
       - name: Build APK (debug)
         working-directory: cordova-app
