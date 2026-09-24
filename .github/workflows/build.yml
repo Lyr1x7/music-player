@@ -1,0 +1,59 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Cordova
+        run: npm install -g cordova@12
+
+      - name: Create Cordova project
+        run: |
+          cordova create cordova-app com.musicplayer.app "Music Player"
+          rm -rf cordova-app/www/*
+          cp www/index.html cordova-app/www/index.html
+          cp config.xml cordova-app/config.xml
+
+      - name: Add Android platform
+        run: |
+          cd cordova-app
+          cordova platform add android@12
+
+      - name: Install plugins
+        run: |
+          cd cordova-app
+          cordova plugin add cordova-plugin-file
+          cordova plugin add cordova-plugin-media
+
+      - name: Build APK (debug)
+        run: |
+          cd cordova-app
+          cordova build android --debug
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: music-player-apk
+          path: cordova-app/platforms/android/app/build/outputs/apk/debug/*.apk
+          retention-days: 30
